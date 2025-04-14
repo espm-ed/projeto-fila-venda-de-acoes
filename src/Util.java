@@ -19,6 +19,8 @@ public class Util {
                 case 2:
                     vender();
                     break;
+                case 3:
+                    return; // verificar o break neste local
                 default:
                     showMessageDialog(null, "Opção inválida");
             }
@@ -26,7 +28,23 @@ public class Util {
 
     }
     private static void vender() {
-        
+        int quantidade_Vendida = parseInt(showInputDialog("Quantidade de ações para vender"));
+        double valor = parseDouble(showInputDialog("Valor da venda"));
+        int qtd;
+        Acao acao;
+        double lucro = 0;
+
+        while(quantidade_Vendida > 0 && !carteira.isEmpty()) {
+            acao = carteira.peek(); 
+            qtd = Math.min(quantidade_Vendida, acao.getQuantidade());
+            lucro += qtd * (valor - acao.getValor());
+            quantidade_Vendida -= qtd;
+            acao.setQuantidade(acao.getQuantidade() - qtd);
+            if(acao.getQuantidade() == 0) {
+                carteira.poll();  // carteira.remove();
+            }
+        }
+        showMessageDialog(null, "Lucro R$ " + lucro);
     }
     private static void comprar() {
         String nome = showInputDialog("Nome da ação");
